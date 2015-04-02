@@ -2,7 +2,7 @@ from scrapy.contrib.spiders import CrawlSpider
 from scrapy.selector import Selector
 from scrapy.http import Request, HtmlResponse
 from OpinatorScraper.items import OpinatorscraperItem
-import sys
+from sys import argv
 
 class ReviewScraper (CrawlSpider):
     name = "OpinatorScraper"
@@ -10,7 +10,7 @@ class ReviewScraper (CrawlSpider):
     global counter
     counter = 0
     def start_requests(self):
-        productID = sys.argv[1]
+        productID = argv[1]
         for i in range(30):
             global counter
             if counter > 100:
@@ -22,7 +22,7 @@ class ReviewScraper (CrawlSpider):
         select = Selector(response)
         item = OpinatorscraperItem()
         x = select.xpath ('//div[@class="reviewText"]/text()').extract()
-        if not x == []:
+        if x != []:
             global counter
             counter += len (x)
             item['reviews'] = x
