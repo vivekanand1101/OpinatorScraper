@@ -1,0 +1,90 @@
+import json
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from op_tables import Reviews, Product, Sentiment
+from op_tables import db_connect, create_tables
+
+class OpinatorscraperPipeline(object):
+    """Opinatorscraper pipeline for storing scraped items in the database"""
+    def __init__(self):
+        engine = db_connect()
+        create_tables (engine)
+        self.Session = sessionmaker(bind = engine)
+
+    def process_item(self, item, spider):
+        session = self.Session()
+        reviews = item['reviews']
+        
+        new_list = []
+        for i in reviews:
+            new_list.append(i.encode('utf-8'))
+        json_array_of_reviews  = json.dumps(new_list)
+
+        product_id = item['product_id']
+        website_name = item['website_name']
+
+        obj_Reviews = Reviews (json_array_of_reviews , product_id)
+        obj_Product = Product (product_id, website_name)
+        obj_Sentiment = Sentiment (product_id)
+"""
+        print "From Sentiment Table: "
+        print obj_Sentiment.dateTime
+        print obj_Sentiment.id
+        print obj_Sentiment.product_id
+        print obj_Sentiment.sentiment
+        print "From Reviews Table: "
+        print obj_Reviews.id
+        print obj_Reviews.product_id
+#        print obj_Reviews.reviews
+        print obj_Reviews.sentiment
+        print obj_Reviews.sentiment_id
+        print "From Product Table: "
+        print obj_Product.id
+        print obj_Product.product_id
+#        print obj_Product.reviews
+        print obj_Product.sentiment
+        print obj_Product.website_name
+"""        
+        try:
+            session.add(obj_Reviews)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+
+        return item
+"""
+        try:
+            try:
+                session.add(obj_Reviews)
+                session.commit()
+            except:
+                print "Couldn't add obj_Reviews"
+                raise
+    
+            try:
+                session1 = self.Session()
+                session1.add(obj_Product)
+                session1.commit()
+            except:
+                print "Couldn't add obj_Product"
+                raise
+            
+            try:
+                session2 = self.Session()
+                session2.add(obj_Sentiment)
+                session2.commit()
+            except:
+                print "Couldn't add obj_Sentiment"
+                raise
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
+
+        return item
+"""
