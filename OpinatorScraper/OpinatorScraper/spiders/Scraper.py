@@ -14,11 +14,8 @@ class ReviewScraper (CrawlSpider):
     productID = argv[1]
 
     def start_requests(self):
-<<<<<<< HEAD
         global counter
-=======
         productID = argv[1]
->>>>>>> fc15b1d3997c53a290960ff4b002d6a18d7b9501
         for i in range(30):
             if counter > 100:
                 break
@@ -33,10 +30,7 @@ class ReviewScraper (CrawlSpider):
         item = OpinatorscraperItem()
         x = select.xpath ('//div[@class="reviewText"]/text()').extract()
         if x != []:
-<<<<<<< HEAD
-=======
             global counter
->>>>>>> fc15b1d3997c53a290960ff4b002d6a18d7b9501
             counter += len (x)
             item['reviews'] = x
             item['product_id'] = productID
